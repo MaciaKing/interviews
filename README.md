@@ -7,6 +7,8 @@ For this interview I have only solved the problems
   - 1.- Have an Inventory of Films.
   - 2.- Calculate the price for rentals.
 
+I have concentrated on the database.
+
 ## Database
 The UML model is this. 
 
