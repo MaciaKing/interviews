@@ -30,5 +30,5 @@ View the inventory:
 View the prices:
 <img width="1497" alt="Demostracion_Funcionamiento_2" src="https://user-images.githubusercontent.com/51322831/219342545-8f536b46-69ea-4844-9972-6ea05b0f8a7d.png">
 
-The prices don't work at all.
+The prices don't work at all. The simbols <--- * > is for separete the diferents results. 
 
