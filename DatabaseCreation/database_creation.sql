@@ -1,16 +1,13 @@
---CREATE DATABASE IF NOT EXISTS videoclub;
---CREATE DATABASE video;
+CREATE DATABASE IF NOT EXISTS video;
 \c video
 
-
--- Crear tabla de alquileres
+-- Create table for rents
 CREATE TABLE Rent (
   idRent SERIAL PRIMARY KEY,
   day_rented DATE
 );
 
-
--- Crear tabla de tipos de películas
+-- Create table for type of film
 CREATE TABLE Type_of_film (
   name_type VARCHAR(50) PRIMARY KEY,
   normal_price INTEGER,
@@ -18,8 +15,7 @@ CREATE TABLE Type_of_film (
   CONSTRAINT chk_name_type CHECK (name_type IN ('new release', 'regular films', 'old film'))
 );
 
-
--- Crear tabla de películas
+-- Create table for film
 CREATE TABLE Film (
   idFilm SERIAL PRIMARY KEY,
   name VARCHAR(255),
@@ -27,8 +23,7 @@ CREATE TABLE Film (
   name_type VARCHAR(50) REFERENCES Type_of_film(name_type)
 );
 
-
--- Crear tabla de tiempos de alquiler
+-- Create table for time
 CREATE TABLE Time (
   idTime SERIAL PRIMARY KEY,
   n_rented_days INTEGER,
@@ -39,8 +34,7 @@ CREATE TABLE Time (
   CONSTRAINT fk_time_rent FOREIGN KEY (idRent) REFERENCES Rent(idRent)
 );
 
-
--- Crear tabla de relación entre película y alquiler
+-- Create table for relation between film and rent
 CREATE TABLE R_Film_Rent (
   idFilm INTEGER REFERENCES Film(idFilm),
   idRent INTEGER REFERENCES Rent(idRent),
@@ -49,12 +43,10 @@ CREATE TABLE R_Film_Rent (
   PRIMARY KEY (idFilm, idRent)
 );
 
-
 --INSERTS
 --TYPE OF FILM
 INSERT INTO Type_of_film (name_type, normal_price, price_extra_day) VALUES 
 ('new release', 40, 40), ('regular films', 30, 20), ('old film', 5, 10);
-
 
 --FILM
 INSERT INTO Film (name, synopsis, name_type) VALUES ('The Godfather', 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.', 'old film'),
@@ -86,12 +78,10 @@ INSERT INTO Time (n_rented_days, n_extra_days, idFilm, idRent) VALUES (2, 0, 1,1
 (5, 0, 12, 2), (5, 0, 11, 2), (3, 0, 10, 2),
 (1, 0, 9, 3);
 
-
---CREATE EXTENSION pg_cron;
-
-/* Creamos la función que se ejecutará cada día esta actualizará
-si hay que actualizarlos n_extra_days para ver si se ha pasado
-de los días de alquiler.
+/* 
+Create the function that will be executed every day, this will update
+if there are to update n_extra_days to see if it has passed
+of the rental days.
 */
 CREATE OR REPLACE FUNCTION actualiza_dias() RETURNS VOID AS $$
 DECLARE
@@ -118,19 +108,29 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
-/* Creamos el evento para que se ejecute cada día a las 00:00
+-- Create the event to execute the function every day at 00:00
+CREATE EXTENSION pg_cron;
 SELECT cron.schedule('0 0 * * *', 'SELECT actualiza_dias();');
+
+-- Create the user
+CREATE USER macia WITH PASSWORD 'macia';
+
+-- Set privileges to the user
+GRANT ALL PRIVILEGES ON DATABASE video TO macia;
+
+GRANT ALL PRIVILEGES ON TABLE Rent TO macia;
+GRANT ALL PRIVILEGES ON TABLE Type_of_film TO macia;
+GRANT ALL PRIVILEGES ON TABLE Film TO macia;
+GRANT ALL PRIVILEGES ON TABLE Time TO macia;
+GRANT ALL PRIVILEGES ON TABLE R_Film_Rent TO macia;
+
+/*
+psql -U macia -d video
+Para conectarse a la base de datos
 */
 
 /*
 --Querys for testing
-
-SELECT Film.idFilm, Film.name,  FROM Film
-JOIN TIME ON Film.idFilm=TIME.idFilm
-JOIN R_Film_Rent ON Time.idFilm=R_Film_Rent.idFilm 
-JOIN Rent ON R_Film_Rent.idRent=Rent.idRent;
-
 
 --Ver todas las películas que se han rentado en un rent
 SELECT Film.idFilm, Film.name, Rent.idRent from Rent
@@ -169,22 +169,3 @@ ORDER BY Time.n_rented_days DESC;
 --Rents que he creado
 select * from Rent WHERE idRent=1 OR idRent=2 OR idRent=3;
 */
-
-
--- Create the user
-CREATE USER macia WITH PASSWORD 'macia';
-
--- Donam permisos a l'usuari
-GRANT ALL PRIVILEGES ON DATABASE video TO macia;
-
-GRANT ALL PRIVILEGES ON TABLE Rent TO macia;
-GRANT ALL PRIVILEGES ON TABLE Type_of_film TO macia;
-GRANT ALL PRIVILEGES ON TABLE Film TO macia;
-GRANT ALL PRIVILEGES ON TABLE Time TO macia;
-GRANT ALL PRIVILEGES ON TABLE R_Film_Rent TO macia;
-
-/*
-psql -U macia -d video
-Para conectarse a la base de datos
-*/
-
