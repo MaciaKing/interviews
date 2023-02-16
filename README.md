@@ -10,3 +10,5 @@ The UML model is this.
 Inside the "DatabaseCreation" directory, a file will be located that will execute a script to initialize the database, load test data and create a user with access to the database for use in the application.
 In addition, in the same directory you will find a stored procedure and an event in PostgreSQL. The event will be programmed to automatically update the days of delay in the rental of a movie.
 
+
+<img width="1507" alt="Demostacion_Funcionamiento" src="https://user-images.githubusercontent.com/51322831/219338842-68037f7d-d6a8-4cee-872f-66ea1610baa4.png">
