@@ -24,4 +24,11 @@ The classes that I have made are in this directory "demo/src/main/java/com/examp
 ## Results
 View the response of the API.
 
+View the inventory: 
 <img width="1507" alt="Demostacion_Funcionamiento" src="https://user-images.githubusercontent.com/51322831/219338842-68037f7d-d6a8-4cee-872f-66ea1610baa4.png">
+
+View the prices:
+<img width="1497" alt="Demostracion_Funcionamiento_2" src="https://user-images.githubusercontent.com/51322831/219342545-8f536b46-69ea-4844-9972-6ea05b0f8a7d.png">
+
+The prices don't work at all.
+
